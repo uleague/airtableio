@@ -25,7 +25,8 @@ async def make_request(session, token, method, app_id, table_name, data=None, **
     if method == "post":
         try:
             async with session.post(url, data=req, headers=headers **kwargs) as response:
-                return await response.json()
+                result = await response.json()
+                return result
         except aiohttp.ClientError as e:
             raise AirtableAPIError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
     elif method == "get":
@@ -39,7 +40,8 @@ async def make_request(session, token, method, app_id, table_name, data=None, **
     elif method == "put":
         try:
             async with session.put(url, data=req, headers=headers **kwargs) as response:
-                return await response.json()
+                result = await response.json()
+                return result
         except aiohttp.ClientError as e:
             raise AirtableAPIError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
     

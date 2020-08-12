@@ -9,19 +9,24 @@ from aiohttp.helpers import sentinel
 
 from . import api
 
+
 class Client(object):
     """
     Class represents client.
     """
+
     _ctx_timeout = ContextVar("AirtableRequestTimeout")
     _ctx_token = ContextVar("AirtableToken")
     _ctx_app_id = ContextVar("AirtableAppId")
-    
-    def __init__(self, token: Text, app_id: Text,
+
+    def __init__(
+        self,
+        token: Text,
+        app_id: Text,
         loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
         connections_limit: Optional[int] = None,
-        timeout: Optional[Union[int, float, aiohttp.ClientTimeout]] = None
-        ):
+        timeout: Optional[Union[int, float, aiohttp.ClientTimeout]] = None,
+    ):
         self._token = None
         self.__token = token
 
@@ -36,40 +41,37 @@ class Client(object):
         # aiohttp main session
         self._session: Optional[aiohttp.ClientSession] = None
         self._connector_class: Type[aiohttp.TCPConnector] = aiohttp.TCPConnector
-        self._connector_init = dict(
-            limit=connections_limit, loop=self.loop
-        )
+        self._connector_init = dict(limit=connections_limit, loop=self.loop)
 
         self._timeout = None
         self.timeout = timeout
-    
+
     def get_new_session(self) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
-            connector=self._connector_class(**self._connector_init),
-            loop=self.loop
+            connector=self._connector_class(**self._connector_init), loop=self.loop
         )
-    
+
     @property
     def session(self) -> Optional[aiohttp.ClientSession]:
         if self._session is None or self._session.closed:
             self._session = self.get_new_session()
         return self._session
-    
+
     @staticmethod
     def _prepare_timeout(
-            value: Optional[Union[int, str, aiohttp.ClientTimeout]]
+        value: Optional[Union[int, str, aiohttp.ClientTimeout]]
     ) -> Optional[aiohttp.ClientTimeout]:
         if value is None or isinstance(value, aiohttp.ClientTimeout):
             return value
         return aiohttp.ClientTimeout(total=value)
-    
+
     @property
     def timeout(self):
         timeout = self._ctx_timeout.get(self._timeout)
         if timeout is None:
             return sentinel
         return timeout
-    
+
     @timeout.setter
     def timeout(self, value):
         self._timeout = self._prepare_timeout(value)
@@ -100,7 +102,7 @@ class Client(object):
     @__token.setter
     def __token(self, value):
         self._token = value
-    
+
     @contextlib.contextmanager
     def with_token(self, token: Text):
         token = self._ctx_token.set(token)
@@ -108,7 +110,7 @@ class Client(object):
             yield
         finally:
             self._ctx_token.reset(token)
-    
+
     @property
     def __app_id(self):
         return self._ctx_app_id.get(self._app_id)
@@ -116,7 +118,7 @@ class Client(object):
     @__app_id.setter
     def __app_id(self, value):
         self._app_id = value
-    
+
     @contextlib.contextmanager
     def with_app_id(self, app_id: Text):
         app_id = self._ctx_app_id.set(app_id)
@@ -124,17 +126,21 @@ class Client(object):
             yield
         finally:
             self._ctx_app_id.reset(app_id)
-            
+
     async def close(self):
         """
         Close all client sessions
         """
         await self.session.close()
-    
-    async def request(self, method: Text, table_name: Text,
-                      data: Optional[Dict] = None,
-                      record_id: Optional[Text] = None,
-                      **kwargs) -> Union[List, Dict, bool]:
+
+    async def request(
+        self,
+        method: Text,
+        table_name: Text,
+        data: Optional[Dict] = None,
+        record_id: Optional[Text] = None,
+        **kwargs
+    ) -> Union[List, Dict, bool]:
         """
         Make a request to Airtable API
         https://airtable.com/api
@@ -146,5 +152,14 @@ class Client(object):
         :rtype: Union[List, Dict]
         :raise: :obj:``
         """
-        return await api.make_request(self.session, self.__token, method, self.__app_id, table_name, data, record_id,
-                                    timeout=self.timeout, **kwargs)
+        return await api.make_request(
+            self.session,
+            self.__token,
+            method,
+            self.__app_id,
+            table_name,
+            data,
+            record_id,
+            timeout=self.timeout,
+            **kwargs
+        )

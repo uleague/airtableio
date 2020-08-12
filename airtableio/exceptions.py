@@ -1,11 +1,12 @@
 import time
 
-_PREFIXES = ['error: ', '[error]: ', 'bad request: ', 'conflict: ', 'not found: ']
+_PREFIXES = ["error: ", "[error]: ", "bad request: ", "conflict: ", "not found: "]
+
 
 def _clean_message(text):
     for prefix in _PREFIXES:
         if text.startswith(prefix):
-            text = text[len(prefix):]
+            text = text[len(prefix) :]
     return (text[0].upper() + text[1:]).strip()
 
 

@@ -1,5 +1,6 @@
 import sys
-sys.path.append('../')
+
+sys.path.append("../")
 
 from airtableio import Airtable
 import asyncio
@@ -9,9 +10,11 @@ APP_ID = ""
 
 my_airtable = Airtable(TOKEN, APP_ID)
 
+
 async def call():
     result = await my_airtable.get_records("Users")
     print(result)
+
 
 async def call_2():
     try:
@@ -20,25 +23,27 @@ async def call_2():
     except Exception:
         raise
 
+
 async def call_3():
     try:
-        data = {"records": [
+        data = {
+            "records": [
                 {
-                "fields": {
-                    "captain_discord": "API_TEST",
-                    "participant_name": "API",
-                    "tournament_id": 111,
-                    "challonge_id": 123
-                }
+                    "fields": {
+                        "captain_discord": "API_TEST",
+                        "participant_name": "API",
+                        "tournament_id": 111,
+                        "challonge_id": 123,
+                    }
                 },
                 {
-                "fields": {
-                    "captain_discord": "API_TEST2",
-                    "participant_name": "API2",
-                    "tournament_id": 111,
-                    "challonge_id": 124
-                }
-                }
+                    "fields": {
+                        "captain_discord": "API_TEST2",
+                        "participant_name": "API2",
+                        "tournament_id": 111,
+                        "challonge_id": 124,
+                    }
+                },
             ]
         }
         result = await my_airtable.create_records("Users", data)
@@ -46,7 +51,8 @@ async def call_3():
     except Exception:
         raise
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.create_task(call())
     loop.create_task(call_2())

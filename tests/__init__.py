@@ -1,5 +1,5 @@
-import os
+from settings import TOKEN, APP_ID
 
 
-TOKEN = os.getenv("TEST_TOKEN")
-APP_ID = os.getenv("TEST_APP_ID")
+TOKEN = TOKEN
+APP_ID = APP_ID

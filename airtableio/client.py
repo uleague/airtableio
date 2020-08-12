@@ -133,6 +133,7 @@ class Client(object):
     
     async def request(self, method: Text, table_name: Text,
                       data: Optional[Dict] = None,
+                      record_id: Optional[Text] = None,
                       **kwargs) -> Union[List, Dict, bool]:
         """
         Make a request to Airtable API
@@ -143,7 +144,7 @@ class Client(object):
         :type data: :obj:`dict`
         :return: result
         :rtype: Union[List, Dict]
-        :raise: :obj:`aiogram.exceptions.TelegramApiError`
+        :raise: :obj:``
         """
-        return await api.make_request(self.session, self.__token, method, self.__app_id, table_name, data,
+        return await api.make_request(self.session, self.__token, method, self.__app_id, table_name, data, record_id,
                                     timeout=self.timeout, **kwargs)

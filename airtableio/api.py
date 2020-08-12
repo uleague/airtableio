@@ -11,12 +11,12 @@ LOG = logging.getLogger('airtable')
 API_URL = "https://api.airtable.com/v0/{app_id}/{table_name}"
 
 
-async def make_request(session, token, method, app_id, table_name, data=None, **kwargs):
+async def make_request(session, token, method, app_id, table_name, data=None, record_id=None, **kwargs):
     LOG.debug('Make request: "%s" with data: "%r', method, data)
 
-    url = Methods.api_url(app_id=app_id, table_name=table_name)
+    url = Methods.api_url(app_id=app_id, table_name=table_name, record_id=record_id)
     
-    req = compose_data(data)
+    req = data
     headers = {
         "Authorization": "Bearer {}".format(token)
     }
@@ -24,7 +24,7 @@ async def make_request(session, token, method, app_id, table_name, data=None, **
 
     if method == "post":
         try:
-            async with session.post(url, data=req, headers=headers **kwargs) as response:
+            async with session.post(url, json=req, headers=headers, **kwargs) as response:
                 result = await response.json()
                 return result
         except aiohttp.ClientError as e:
@@ -39,7 +39,7 @@ async def make_request(session, token, method, app_id, table_name, data=None, **
             raise AirtableAPIError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
     elif method == "put":
         try:
-            async with session.put(url, data=req, headers=headers **kwargs) as response:
+            async with session.put(url, data=req, headers=headers, **kwargs) as response:
                 result = await response.json()
                 return result
         except aiohttp.ClientError as e:
@@ -65,13 +65,18 @@ def compose_data(params=None):
 class Methods:
 
     GET_RECORDS = "get"
+    GET_RECORD = "get"
+    CREATE_RECORDS = "post"
 
     @staticmethod
-    def api_url(app_id, table_name):
+    def api_url(app_id, table_name, record_id=None):
         """
         Generate API URL with included token and method name
-        :param token:
-        :param method:
+        :param app_id:
+        :param table_name:
         :return:
         """
-        return API_URL.format(app_id=app_id, table_name=table_name)
+        if record_id:
+            return API_URL.format(app_id=app_id, table_name=table_name) + "/" + record_id
+        else:
+            return API_URL.format(app_id=app_id, table_name=table_name)

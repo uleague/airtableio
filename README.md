@@ -2,9 +2,12 @@
 =====================
 Powered by aiohttp.
 
+Moved to https://github.com/uleague/airtableio
+
 **Simple Usage**
 
 ```python 
+
 from airtableio import Airtable
 import asyncio
 

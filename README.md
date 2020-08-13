@@ -3,6 +3,12 @@
 Powered by aiohttp.
 https://airtable.com/
 
+**Installation**
+
+```bash
+pip install airtableio
+```
+
 **Simple Usage**
 
 ```python 

@@ -1,8 +1,7 @@
 **Async API wrapper for Airtable.**
 =====================
 Powered by aiohttp.
-
-Moved to https://github.com/uleague/airtableio
+https://airtable.com/
 
 **Simple Usage**
 

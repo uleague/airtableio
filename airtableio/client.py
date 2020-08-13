@@ -137,7 +137,7 @@ class Client(object):
         self,
         method: Text,
         table_name: Text,
-        data: Optional[Dict] = None,
+        data: Optional[Union[Dict, List]] = None,
         record_id: Optional[Text] = None,
         **kwargs
     ) -> Union[List, Dict, bool]:

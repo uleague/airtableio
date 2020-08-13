@@ -2,7 +2,7 @@ import asyncio
 import contextlib
 import io
 from contextvars import ContextVar
-from typing import Dict, List, Optional, Union, Type, Text
+from typing import Dict, List, Optional, Text, Type, Union
 
 import aiohttp
 from aiohttp.helpers import sentinel

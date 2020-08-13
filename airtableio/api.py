@@ -21,7 +21,6 @@ async def make_request(
     req = data
     headers = {"Authorization": "Bearer {}".format(token)}
     method = method.lower()
-
     if method == "post":
         try:
             async with session.post(
@@ -54,6 +53,17 @@ async def make_request(
             raise AirtableAPIError(
                 f"aiohttp client throws an error: {e.__class__.__name__}: {e}"
             )
+    elif method == "patch":
+        try:
+            async with session.patch(
+                url, data=req, headers=headers, **kwargs
+            ) as response:
+                result = await response.json()
+                return result
+        except aiohttp.ClientError as e:
+            raise AirtableAPIError(
+                f"aiohttp client throws an error: {e.__class__.__name__}: {e}"
+            )
 
 
 def compose_data(params=None):
@@ -76,6 +86,7 @@ class Methods:
     GET_RECORDS = "get"
     GET_RECORD = "get"
     CREATE_RECORDS = "post"
+    UPDATE_RECORDS = "patch"
 
     @staticmethod
     def api_url(app_id, table_name, record_id=None):

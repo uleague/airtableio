@@ -45,7 +45,7 @@ async def make_request(
     elif method == "put":
         try:
             async with session.put(
-                url, data=req, headers=headers, **kwargs
+                url, json=req, headers=headers, **kwargs
             ) as response:
                 result = await response.json()
                 return result
@@ -56,7 +56,7 @@ async def make_request(
     elif method == "patch":
         try:
             async with session.patch(
-                url, data=req, headers=headers, **kwargs
+                url, json=req, headers=headers, **kwargs
             ) as response:
                 result = await response.json()
                 return result
